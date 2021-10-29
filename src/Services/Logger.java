@@ -15,10 +15,11 @@ public final class Logger implements ILogger, ISpeedTestLogger {
     private final OutputStream _stream;
 
     private long _startTimeNS = -1;
+    private long _errorCount = 0;
 
     public Logger(OutputStream stream) {
         _stream = stream;
-        LogInfo("\n\nStart new logging session!");
+        LogInfo("=>\n\nStart new logging session!");
     }
 
     public static String LoggerPrefix = "logger -> ";
@@ -26,18 +27,6 @@ public final class Logger implements ILogger, ISpeedTestLogger {
     public static String InfoPrefix = "Info: ";
     public static String StartSpeedTestPrefix = "Starting speed test: ";
     public static String EndSpeedTestPrefix = "End speed test: ";
-
-    @Override
-    public void LogError(String msg) {
-        String s = _GetTimePrefix() + ' ' + LoggerPrefix + ErrorPrefix + msg;
-        _LogToStream(s);
-    }
-
-    @Override
-    public void LogInfo(String msg) {
-        String s = _GetTimePrefix() + ' ' + LoggerPrefix + InfoPrefix + msg;
-        _LogToStream(s);
-    }
 
     private void _LogToStream(String message){
         try {
@@ -50,6 +39,23 @@ public final class Logger implements ILogger, ISpeedTestLogger {
     private String _GetTimePrefix() {
         return "\ntime: " + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
     }
+    @Override
+    public void LogError(String msg) {
+        ++_errorCount;
+        String s = _GetTimePrefix() + ' ' + LoggerPrefix + ErrorPrefix + msg;
+        _LogToStream(s);
+    }
+
+    @Override
+    public void LogInfo(String msg) {
+        String s = _GetTimePrefix() + ' ' + LoggerPrefix + InfoPrefix + msg;
+        _LogToStream(s);
+    }
+
+    @Override
+    public void LogTotalErrorsCount() {
+        _LogToStream("\nTotal errors count: " + _errorCount);
+    }
 
     @Override
     public void LogStartSpeedTest(String header){
@@ -58,6 +64,7 @@ public final class Logger implements ILogger, ISpeedTestLogger {
         if(_startTimeNS != -1) {
             //throw new OperationNotSupportedException("Can not run new speed test while the previous one is not completed.");
             LogError("Can not run new speed test while the previous one is not completed.");
+            return;
         }
         _startTimeNS = System.nanoTime();
     }
@@ -67,6 +74,7 @@ public final class Logger implements ILogger, ISpeedTestLogger {
         if(_startTimeNS == -1){
             //throw new OperationNotSupportedException("Can not stop speed test while it not started.");
             LogError("Can not stop speed test while it not started.");
+            return;
         }
         long t = System.nanoTime();
 

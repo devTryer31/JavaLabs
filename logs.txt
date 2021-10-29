@@ -115,3 +115,15 @@ time: 12:49:16 logger -> Info: Try to login in account Admin(wer):
 time: 12:49:26 logger -> Info: Attempt #1 pass: Admin123
 time: 12:49:26 logger -> Info: Successful loginStarting speed test:  Adding itemEnd speed test:  Elapsed: 15900ns.
 time: 12:49:55 logger -> Info: Good program termination
+time: 15:40:13 logger -> Info: 
+
+Start new logging session!
+time: 15:40:13 logger -> Info: Try to login in account Admin(wer):
+time: 15:40:17 logger -> Info: Attempt #1 pass: Admin123
+time: 15:40:17 logger -> Info: Successful login
+Starting speed test:  Adding item
+End speed test:  Elapsed: 17500ns.
+Starting speed test:  Adding item
+End speed test:  Elapsed: 3400ns.
+Total errors count: 0
+time: 15:41:13 logger -> Info: Good program termination

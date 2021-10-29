@@ -39,8 +39,10 @@ public class Main {
 
         MainView.Print("Enter '0'.");
         while (mainController.Execute(role)) ;
-        if (logger != null)
+        if (logger != null) {
+            logger.LogTotalErrorsCount();
             logger.LogInfo("Good program termination");
+        }
         MainView.Print("Termination...");
     }
 
