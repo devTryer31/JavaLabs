@@ -1,0 +1,102 @@
+logger -> Info: Try to login in account Admin(root):
+time: 02:53:31logger -> Info: Attempt #2pass: Admin123
+time: 02:53:35logger -> Info: Successful login
+time: 02:53:35logger -> Info: Attempt load from Data.txtappend mode=true
+time: 02:54:39logger -> Info: Loaded 8entities successfully
+time: 02:54:39logger -> Info: Deleting entity: id=2item=Bike class: Vehicle{_Mark='BikeModel', _Model='BikeNotVol', _MaxWeight=123.0, _PassengerAmount=3, _MaxSpeed=321.0, _WheelsAmount=3}
+time: 02:55:02logger -> Info: Swapping on id= 1betweenBike class: Vehicle{_Mark='BikeModel', _Model='BikeNotVol', _MaxWeight=123.0, _PassengerAmount=3, _MaxSpeed=321.0, _WheelsAmount=3}andTruck class: Car class: Vehicle{_Mark='NewTruck', _Model='NewTruck2021', _MaxWeight=123123.0, _PassengerAmount=4, _MaxSpeed=23.0, _WheelsAmount=8}
+		{_Trailer=null}
+time: 02:56:02logger -> Info: Attempt dump to Data2.txtappend mode=false
+time: 02:56:39logger -> Info: Dumped 7entities successfully
+time: 02:56:39logger -> Info: Good program termination
+time: 02:57:06
+time: 03:03:44logger -> Info: 
+
+Start new logging session!
+
+
+time: 03:03:44logger -> Info: Try to login in account Admin(root):
+time: 03:03:49logger -> Info: Attempt #2pass: dghfdh
+time: 03:03:51logger -> Info: Attempt #1pass: yreytr
+time: 03:03:52logger -> Info: Attempt #0pass: jgfjgfh
+time: 03:03:52logger -> Info: Unsuccessful login. Program termination
+time: 03:05:45logger -> Info: Start new logging session!
+
+
+time: 03:05:45logger -> Info: Try to login in account Admin(root):
+time: 03:05:52logger -> Info: Attempt #1pass: dont remember
+time: 03:05:56logger -> Info: Attempt #2pass: ok
+time: 03:05:59logger -> Info: Attempt #3pass: Admin123
+time: 03:05:59logger -> Info: Successful login
+time: 03:06:20logger -> Info: Attempt load from Test2.txt append mode=true
+time: 03:06:20logger -> Error: Load denied. msg=Test2.txt (Не удается найти указанный файл)
+time: 03:06:53logger -> Info: Attempt load from Data2.txt append mode=true
+time: 03:06:53logger -> Info: Loaded 7 entities successfully
+time: 03:07:35logger -> Info: Swapping on id= 6 between
+Bike class: Vehicle{_Mark='l', _Model='p', _MaxWeight=234.0, _PassengerAmount=2, _MaxSpeed=2.0, _WheelsAmount=2}
+and
+Bike class: Vehicle{_Mark='w', _Model='e', _MaxWeight=4.0, _PassengerAmount=5, _MaxSpeed=432.0, _WheelsAmount=3}
+
+time: 03:08:20logger -> Info: Attempt dump to Data3.txt append mode=true
+time: 03:08:20logger -> Info: Dumped 7 entities successfully
+time: 03:08:52logger -> Info: Good program termination
+time: 14:36:18 logger -> Info: Start new logging session!
+
+
+time: 14:36:18 logger -> Info: Try to login in account Admin(root):
+time: 14:36:24 logger -> Info: Attempt #1pass: kdfshghdfkg
+time: 14:36:25 logger -> Info: Attempt #2pass: rueyiiug
+time: 14:36:27 logger -> Info: Attempt #3pass: jghdidusfgi
+time: 14:36:27 logger -> Info: Unsuccessful login. Program termination
+time: 14:36:37 logger -> Info: Start new logging session!
+
+
+time: 14:36:37 logger -> Info: Try to login in account Admin(root):
+time: 14:36:43 logger -> Info: Attempt #1pass: Admin123
+time: 14:36:43 logger -> Info: Successful login
+time: 14:40:22 logger -> Info: Good program termination
+time: 14:54:33 logger -> Info: Start new logging session!
+
+
+time: 14:54:33 logger -> Info: Try to login in account Admin(root):
+time: 14:54:51 logger -> Info: Attempt #1pass: hgkjfdg
+time: 14:54:53 logger -> Info: Attempt #2pass: uhdighdfg
+time: 14:54:54 logger -> Info: Attempt #3pass: hgdsuguird
+time: 14:54:54 logger -> Info: Unsuccessful login. Program termination
+time: 14:55:01 logger -> Info: Start new logging session!
+
+
+time: 14:55:01 logger -> Info: Try to login in account Admin(root):
+time: 14:55:05 logger -> Info: Attempt #1pass: gjfdgjdsg
+time: 14:55:08 logger -> Info: Attempt #2pass: Admin123
+time: 14:55:08 logger -> Info: Successful login
+time: 14:57:15 logger -> Info: Attempt load from Data.txt append mode=true
+time: 14:57:15 logger -> Info: Loaded 8 entities successfully
+time: 14:57:56 logger -> Info: Attempt load from Datatxt.txt append mode=true
+time: 14:57:56 logger -> Error: Load denied. msg=Datatxt.txt (Не удается найти указанный файл)
+time: 14:58:16 logger -> Info: Attempt dump to Datatxt.txt append mode=true
+time: 14:58:16 logger -> Info: Dumped 8 entities successfully
+time: 14:58:54 logger -> Info: Good program termination
+time: 14:59:58 logger -> Info: Start new logging session!
+
+
+time: 14:59:58 logger -> Info: Try to login in account Admin(wer):
+time: 15:00:09 logger -> Info: Attempt #1pass: Admin123
+time: 15:00:09 logger -> Info: Successful login
+time: 11:14:41 logger -> Info: Start new logging session!
+
+
+time: 11:14:42 logger -> Info: Try to login in account Admin(wer):
+time: 11:14:53 logger -> Info: Attempt #1pass: Admin123
+time: 11:14:53 logger -> Info: Successful login
+time: 11:15:31 logger -> Info: Attempt load from Data2.txt append mode=true
+time: 11:15:31 logger -> Info: Loaded 7 entities successfully
+time: 11:15:41 logger -> Info: Good program termination
+time: 11:16:39 logger -> Info: 
+
+Start new logging session!
+time: 11:16:39 logger -> Info: Try to login in account Admin(wer):
+time: 11:16:41 logger -> Info: Attempt #1pass: gfdg
+time: 11:16:42 logger -> Info: Attempt #2pass: gsdgrrs
+time: 11:16:43 logger -> Info: Attempt #3pass: erte123
+time: 11:16:43 logger -> Info: Unsuccessful login. Program termination
