@@ -100,3 +100,18 @@ time: 11:16:41 logger -> Info: Attempt #1pass: gfdg
 time: 11:16:42 logger -> Info: Attempt #2pass: gsdgrrs
 time: 11:16:43 logger -> Info: Attempt #3pass: erte123
 time: 11:16:43 logger -> Info: Unsuccessful login. Program termination
+time: 11:37:35 logger -> Info: 
+
+Start new logging session!
+time: 11:37:35 logger -> Info: Try to login in account Admin(wer):
+time: 11:37:39 logger -> Info: Attempt #1pass: Admin123
+time: 11:37:39 logger -> Info: Successful login
+time: 12:30:44 logger -> Info: 
+
+time: 12:49:16 logger -> Info: 
+
+Start new logging session!
+time: 12:49:16 logger -> Info: Try to login in account Admin(wer):
+time: 12:49:26 logger -> Info: Attempt #1 pass: Admin123
+time: 12:49:26 logger -> Info: Successful loginStarting speed test:  Adding itemEnd speed test:  Elapsed: 15900ns.
+time: 12:49:55 logger -> Info: Good program termination

@@ -28,7 +28,7 @@ public class LoginController {
         while (cnt-- != 0) {
             var password = LoginView.GetPassword();
             if (_logger != null)
-                _logger.LogInfo("Attempt #" + (3 - cnt) + "pass: " + password);
+                _logger.LogInfo("Attempt #" + (3 - cnt) + " pass: " + password);
             if (password.equals(_properties.getProperty("PASSWORD")))
                 break;
         }

@@ -10,11 +10,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.*;
 
-public final class InMemoryVehiclesDataService implements IVehiclesRepository {
+public final class InMemoryVehiclesDataService<T extends Collection<VehicleItem>> implements IVehiclesRepository {
 
     private int _lastId = 0;
 
-    private ArrayList<VehicleItem> _items = new ArrayList<VehicleItem>();
+    private T _items = (T) new ArrayList<VehicleItem>();
     private ILogger _logger;
 
     public InMemoryVehiclesDataService(ILogger logger) {
@@ -31,8 +31,12 @@ public final class InMemoryVehiclesDataService implements IVehiclesRepository {
 
     @Override
     public void Add(VehicleItem source) {
+        if(_logger != null)
+            _logger.LogStartSpeedTest("Adding item");
         source.setId(_lastId++);
         _items.add(source);
+        if(_logger != null)
+            _logger.LogEndSpeedTest("");
     }
 
     @Override

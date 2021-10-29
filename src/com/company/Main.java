@@ -5,6 +5,7 @@ import Services.Logger;
 import controllers.LoginController;
 import controllers.MainController;
 import models.*;
+import models.domain.VehicleItem;
 import views.MainView;
 
 import java.io.FileInputStream;
@@ -30,7 +31,7 @@ public class Main {
             return;
         }
 
-        var repository = new InMemoryVehiclesDataService(logger);
+        var repository = new InMemoryVehiclesDataService<ArrayList<VehicleItem>>(logger);
         var mainController = new MainController(repository, appProps, logger);
         var loginController = new LoginController(appProps, logger);
 
