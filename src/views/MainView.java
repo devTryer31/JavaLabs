@@ -2,8 +2,7 @@ package views;
 
 import models.*;
 
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.*;
 
 public final class MainView {
 
@@ -20,6 +19,25 @@ public final class MainView {
             "7. Dump data to file [file_path]\n" +
             "8. Load data from file [file_path]\n" +
             "9. Exit\n";
+
+    public static void PrintAutoTestTable(Map<String, HashMap<Integer, Long>> results){
+        boolean isHeadersPrinted = false;
+
+        for(var row : results.entrySet()){
+                System.out.print("\t\t\t");
+            var rowValKeys = new TreeSet<Integer>(row.getValue().keySet());//row.getValue().entrySet();
+            if(!isHeadersPrinted) {
+                for (var key : rowValKeys) {//headers
+                    System.out.print(String.format(" %6d",  key));
+                }
+                isHeadersPrinted = true;
+            }
+            System.out.print("\n" + row.getKey()+ "\t");
+            for(var key : rowValKeys){//time
+                System.out.print(String.format(" %6d",  row.getValue().get(key)));
+            }
+        }
+    }
 
     public static int GetFunctionId() {
         Print("Enter function number:");

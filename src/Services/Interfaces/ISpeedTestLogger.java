@@ -4,8 +4,8 @@ import javax.naming.OperationNotSupportedException;
 
 public interface ISpeedTestLogger {
 
-    void LogStartSpeedTest(String header);
+    void LogStartSpeedTest(String header, String timeType);
 
-    void LogEndSpeedTest(String header);
+    long LogEndSpeedTest(String header, String timeType);
 
 }

@@ -1,5 +1,6 @@
 package controllers;
 
+import Services.CollectionTester;
 import Services.InMemoryVehiclesDataService;
 import Services.Interfaces.IVehiclesRepository;
 import Services.Interfaces.ILogger;
@@ -23,10 +24,19 @@ public class MainController {
         switch (MainView.GetFunctionId()) {
             case 0:
                 MainView.Print(MainView.Lobby);
-                if (role.equals("root"))
+                if (role.equals("root")) {
+                    Boolean isAutoTests = _properties.getProperty("ENABLEAUTOTESTS").equals("true");
                     MainView.Print("Admin display: \n" +
-                            "AutoTests: " + _properties.getProperty("ENABLEAUTOTESTS") + "\n" +
-                            "Debug: " + _properties.getProperty("ISDEBUGMODE") + "\n");
+                            "Debug: " + _properties.getProperty("ISDEBUGMODE") + "\n" +
+                            "AutoTests: " + isAutoTests + "\n");
+                    if(isAutoTests){
+                        MainView.Print("Add results:");
+                        MainView.PrintAutoTestTable(CollectionTester.AddResults);
+                        MainView.Print("\n\nRemove results:");
+                        MainView.PrintAutoTestTable(CollectionTester.RemoveResults);
+                        MainView.Print("\n");
+                    }
+                }
                 break;
             case 1:
                 var res = _dataRepository.Get(MainView.GetId());

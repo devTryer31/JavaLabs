@@ -1,5 +1,6 @@
 package com.company;
 
+import Services.CollectionTester;
 import Services.InMemoryVehiclesDataService;
 import Services.Logger;
 import controllers.LoginController;
@@ -26,12 +27,18 @@ public class Main {
             appProps.load(new FileInputStream(appConfigPath));
             if (appProps.getProperty("ISDEBUGMODE").equals("true"))
                 logger = new Logger(new FileOutputStream("logs.txt", true));
+            if (appProps.getProperty("ENABLEAUTOTESTS").equals("true")) {
+                if(logger == null)
+                    CollectionTester.StartTesting(new Logger(System.out), false);
+                else
+                    CollectionTester.StartTesting(logger, false);
+            }
         } catch (Exception e) {
             MainView.PrintError(e.getMessage());
             return;
         }
 
-        var repository = new InMemoryVehiclesDataService<ArrayList<VehicleItem>>(logger);
+        var repository = new InMemoryVehiclesDataService(logger, new ArrayList<VehicleItem>());
         var mainController = new MainController(repository, appProps, logger);
         var loginController = new LoginController(appProps, logger);
 
