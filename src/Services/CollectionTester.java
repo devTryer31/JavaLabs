@@ -1,6 +1,7 @@
 package Services;
 
 import Services.Interfaces.ILogger;
+import Services.Interfaces.ISpeedTestLogger;
 import models.*;
 import models.domain.VehicleItem;
 
@@ -21,7 +22,7 @@ public final class CollectionTester {
         Random rnd = new Random(seed);
         logger.LogInfo("Executing StartTesting method from CollectionTester");
         for (int cnt : new int[]{10, 100, 1000, 10000, 100000}) {
-            var dbArrayList = new InMemoryVehiclesDataService(null, collection);
+            var db = new InMemoryVehiclesDataService(null, collection);
             var items = GenerateRange(cnt, 5);
 
             String header = "new " + cnt + " values to " + collectionName;
@@ -36,7 +37,7 @@ public final class CollectionTester {
                 if (enableEveryElementLogs)
                     logger.LogStartSpeedTest(headerIdx, "ns");
 
-                dbArrayList.Add(item);
+                db.Add(item);
                 if (enableEveryElementLogs)
                     logger.LogEndSpeedTest(headerIdx, "ns");
             }
@@ -58,7 +59,7 @@ public final class CollectionTester {
             int toDelete = (int) (cnt * 0.1);
             LinkedList<Integer> idxsToDelete = new LinkedList<>();
             do {
-                int idxToDelete = Math.abs(rnd.nextInt()) % toDelete;
+                int idxToDelete = Math.abs(rnd.nextInt()) % cnt;
                 if (!idxsToDelete.contains(idxToDelete))
                     idxsToDelete.add(idxToDelete);
             } while (idxsToDelete.size() != toDelete);
@@ -73,7 +74,7 @@ public final class CollectionTester {
                 if (enableEveryElementLogs)
                     logger.LogStartSpeedTest(headerIdx, "ns");
 
-                dbArrayList.Delete(id);
+                db.Delete(id);
 
                 if (enableEveryElementLogs)
                     logger.LogEndSpeedTest(headerIdx, "ns");
@@ -82,7 +83,7 @@ public final class CollectionTester {
 
             res = totalRemoveItemsTime / cnt;
 
-            logger.LogInfo("Average element removing time: " + res + " ms");
+            logger.LogInfo("Average element removing time: " + res + " ns");
 
             row = RemoveResults.get(collectionName);
             if (row == null) {
@@ -94,6 +95,30 @@ public final class CollectionTester {
 
             logger.LogEndSpeedTest(header, "ms");
         }
+        logger.LogInfo("Additional test begin");
+        AdditionalArrayListTest(logger);
+        logger.LogInfo("Additional test end\n");
+    }
+
+    public static void AdditionalArrayListTest(ISpeedTestLogger logger) {
+        int oldCapacity = 10;
+        String toAddElement = "Some element to add";
+        //var items = GenerateRange(oldCapacity * 3 / 2 + 1, 5);
+        var oldCollection = new ArrayList<String>(oldCapacity);
+
+        String header1 = "Add one element with capacity=" + oldCapacity;
+        logger.LogStartSpeedTest(header1, "ns");
+        oldCollection.add(toAddElement);
+        logger.LogEndSpeedTest(header1, "ns");
+
+
+        int newCapacity = oldCapacity * 3 / 2 + 1;
+        var newCollection = new ArrayList<String>(newCapacity);
+        String header2 = "Add one element with capacity=" + newCapacity;
+        logger.LogStartSpeedTest(header1, "ns");
+        newCollection.add(toAddElement);
+        logger.LogEndSpeedTest(header1, "ns");
+
     }
 
     public static Iterable<VehicleItem> GenerateRange(int length, int seed) {
