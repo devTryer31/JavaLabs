@@ -115,9 +115,9 @@ public final class CollectionTester {
         int newCapacity = oldCapacity * 3 / 2 + 1;
         var newCollection = new ArrayList<String>(newCapacity);
         String header2 = "Add one element with capacity=" + newCapacity;
-        logger.LogStartSpeedTest(header1, "ns");
+        logger.LogStartSpeedTest(header2, "ns");
         newCollection.add(toAddElement);
-        logger.LogEndSpeedTest(header1, "ns");
+        logger.LogEndSpeedTest(header2, "ns");
 
     }
 
