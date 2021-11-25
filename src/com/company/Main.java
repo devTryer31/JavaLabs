@@ -7,50 +7,69 @@ import controllers.LoginController;
 import controllers.MainController;
 import models.*;
 import models.domain.VehicleItem;
+import views.GUI.Components.GraphComponent.*;
+import views.GUI.WindowView;
 import views.MainView;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.*;
+import java.util.List;
 
 
 public class Main {
 
     public static void main(String[] args) {
-        Locale.setDefault(new Locale("en"));
 
-        String appConfigPath = "app.properties";
+        HashMap<Integer, Long> xmaps = new HashMap<>();
+        xmaps.put(1, 1L);
+        xmaps.put(2, 2L);
 
-        Properties appProps = new Properties();
-        Logger logger = null;
-        try {
-            appProps.load(new FileInputStream(appConfigPath));
-            if (appProps.getProperty("ISDEBUGMODE").equals("true"))
-                logger = new Logger(new FileOutputStream("logs.txt", true));
-            if (appProps.getProperty("ENABLEAUTOTESTS").equals("true")) {
-                if(logger == null)
-                    CollectionTester.StartTesting(new Logger(System.out), false);
-                else
-                    CollectionTester.StartTesting(logger, false);
-            }
-        } catch (Exception e) {
-            MainView.PrintError(e.getMessage());
-            return;
-        }
+        GraphComponentParams params = new GraphComponentParams();
+        params.title = "TestTitle";
+        params.graphColor = Color.CYAN;
+        params.xAxisName = "count";
+        params.yAxisName = "time";
 
-        var repository = new InMemoryVehiclesDataService(logger, new ArrayList<VehicleItem>());
-        var mainController = new MainController(repository, appProps, logger);
-        var loginController = new LoginController(appProps, logger);
+        WindowView window = new WindowView(xmaps, xmaps, params);
+        window.ShowWindowView();
 
-        var role = loginController.Execute();
-
-        MainView.Print("Enter '0'.");
-        while (mainController.Execute(role)) ;
-        if (logger != null) {
-            logger.LogTotalErrorsCount();
-            logger.LogInfo("Good program termination");
-        }
-        MainView.Print("Termination...");
+        //        Locale.setDefault(new Locale("en"));
+//
+//        String appConfigPath = "app.properties";
+//
+//        Properties appProps = new Properties();
+//        Logger logger = null;
+//        try {
+//            appProps.load(new FileInputStream(appConfigPath));
+//            if (appProps.getProperty("ISDEBUGMODE").equals("true"))
+//                logger = new Logger(new FileOutputStream("logs.txt", true));
+//            if (appProps.getProperty("ENABLEAUTOTESTS").equals("true")) {
+//                if(logger == null)
+//                    CollectionTester.StartTesting(new Logger(System.out), false);
+//                else
+//                    CollectionTester.StartTesting(logger, false);
+//            }
+//        } catch (Exception e) {
+//            MainView.PrintError(e.getMessage());
+//            return;
+//        }
+//
+//        var repository = new InMemoryVehiclesDataService(logger, new ArrayList<VehicleItem>());
+//        var mainController = new MainController(repository, appProps, logger);
+//        var loginController = new LoginController(appProps, logger);
+//
+//        var role = loginController.Execute();
+//
+//        MainView.Print("Enter '0'.");
+//        while (mainController.Execute(role)) ;
+//        if (logger != null) {
+//            logger.LogTotalErrorsCount();
+//            logger.LogInfo("Good program termination");
+//        }
+//        MainView.Print("Termination...");
     }
 
     private static void TestsLab3() {

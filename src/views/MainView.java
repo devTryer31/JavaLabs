@@ -1,6 +1,7 @@
 package views;
 
 import models.*;
+import views.GUI.WindowView;
 
 import java.util.*;
 
