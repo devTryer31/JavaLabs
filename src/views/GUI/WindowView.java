@@ -1,6 +1,7 @@
 package views.GUI;
 
 import views.GUI.Components.GraphComponent;
+import views.GUI.Components.GraphComponentParams;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +11,7 @@ public class WindowView {
     private final String _title;
     private GraphComponent _graphComponent;
 
-    public WindowView(String title, HashMap<Integer, Long> maps, GraphComponent.GraphComponentParams parameters){
+    public WindowView(String title, HashMap<Integer, Long> maps, GraphComponentParams parameters){
         _title = title;
         _graphComponent = new GraphComponent(maps, parameters);
         _graphComponent.set_height(800);
@@ -22,7 +23,7 @@ public class WindowView {
             JFrame frame = new JFrame(_title);
             frame.add(_graphComponent);
             frame.pack();
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             frame.setSize(500,500);
             frame.setVisible(true);
         });

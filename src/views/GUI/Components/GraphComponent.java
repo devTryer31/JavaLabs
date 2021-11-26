@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class GraphComponent extends JComponent {
@@ -41,13 +42,6 @@ public class GraphComponent extends JComponent {
         this._height = _height;
     }
 
-    public static class GraphComponentParams {
-        public String title;
-        public String xAxisName;
-        public String yAxisName;
-        public Color graphColor;
-    }
-
     @Override
     public void paintComponent(Graphics gh) {
         Graphics2D field2d = (Graphics2D) gh;
@@ -55,7 +49,7 @@ public class GraphComponent extends JComponent {
         //field2d.draw(new Rectangle2D.Double(0, 0, _width, _height));
 
         //making graphic title
-        Font FTitle = new Font("Times new roman", Font.PLAIN, 14);
+//        Font FTitle = new Font("Times new roman", Font.PLAIN, 14);
         field2d.drawString(_parameters.title, _width / 2, _topYPos);
         _topYPos += 15;
 
@@ -71,14 +65,17 @@ public class GraphComponent extends JComponent {
         field2d.drawString(_parameters.xAxisName, _width - _inner_margin + 5, axisLineY);
         field2d.drawString(_parameters.yAxisName, _inner_margin, _topYPos - 5);
 
-        var xValues = _graphMaps.keySet().stream().toList();
-        var xMax = xValues.stream().max(Long::compare).get();
-        var xMin = xValues.stream().min(Long::compare).get();
-        double XtoLenCoef = (double)innerRectWidth / (xMax - xMin);
-        var scaledXValues = xValues.stream().map(x -> _inner_margin + (x - xMin) * XtoLenCoef).toList();
+        var xValues = new ArrayList<Float>();
+        for (float j = 0F; j < _width; j += _width / (float) _graphMaps.size()) {
+            xValues.add(j);
+        }
+//        var xMax = xValues.stream().max(Long::compare).get();
+//        var xMin = xValues.stream().min(Long::compare).get();
+//        double XtoLenCoef = (double)innerRectWidth / (xMax - xMin);
+        var scaledXValues = xValues.stream().map(x -> _inner_margin + x).toList();
 
 
-        var yValues = _graphMaps.values().stream().toList();
+        var yValues = _graphMaps.values().stream().sorted().toList();
         var yMax = yValues.stream().max(Long::compare).get();
         var yMin = yValues.stream().min(Long::compare).get();
         double YtoLenCoef = (double)innerRectHeight / (yMax - yMin);
@@ -90,6 +87,7 @@ public class GraphComponent extends JComponent {
         field2d.drawString(xValues.get(0).toString(), scaledXValues.get(0).floatValue(), (float) axisLineY + _graphPointsDiam * 3);
         field2d.drawString(yValues.get(0).toString(), (float)_inner_margin - _graphPointsDiam * 3, scaledYValues.get(0).floatValue());
 
+        var keys = _graphMaps.keySet().stream().sorted().toList();
 
         for (int i = 1; i < scaledXValues.size(); ++i) {
             int prev_i = i - 1;
@@ -108,7 +106,7 @@ public class GraphComponent extends JComponent {
             //drawing axis stokes with values
             float stoke_x = (float)curr_x + pointRad;
             field2d.draw(new Line2D.Double(stoke_x, axisLineY + _graphPointsDiam, stoke_x, axisLineY - _graphPointsDiam));
-            field2d.drawString(xValues.get(i).toString(), stoke_x, axisLineY + _graphPointsDiam * 3);
+            field2d.drawString(keys.get(i).toString(), stoke_x, axisLineY + _graphPointsDiam * 3);
 
 
             float stoke_y = (float)curr_y + pointRad;

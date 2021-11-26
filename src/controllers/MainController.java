@@ -6,6 +6,7 @@ import Services.Interfaces.IVehiclesRepository;
 import Services.Interfaces.ILogger;
 import models.domain.VehicleItem;
 import views.GUI.Components.GraphComponent;
+import views.GUI.Components.GraphComponentParams;
 import views.GUI.WindowView;
 import views.MainView;
 
@@ -77,13 +78,19 @@ public class MainController {
                 ((InMemoryVehiclesDataService) _dataRepository).LoadFromFile(MainView.GetFilePath(), MainView.DisplayYesOrNo("Tern on append mode?"));
                 break;
             case 9:
-                var params = new GraphComponent.GraphComponentParams();
+                var params = new GraphComponentParams();
                 params.graphColor = Color.CYAN;
                 params.xAxisName = "N";
                 params.yAxisName = "ns";
                 for (var addResKey : CollectionTester.AddResults.keySet()) {
+                    params = params.Clone();
                     params.title = addResKey;
                     new WindowView("Add result", CollectionTester.AddResults.get(addResKey), params).ShowWindowView();
+                }
+                for (var remResKey : CollectionTester.RemoveResults.keySet()) {
+                    params = params.Clone();
+                    params.title = remResKey;
+                    new WindowView("Remove result", CollectionTester.RemoveResults.get(remResKey), params).ShowWindowView();
                 }
                 break;
             case 10:

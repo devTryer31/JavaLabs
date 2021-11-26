@@ -9,8 +9,8 @@ import java.util.*;
 
 public final class CollectionTester {
 
-    public static final Map<String, HashMap<Integer, Long>> AddResults = new TreeMap<>();
-    public static final Map<String, HashMap<Integer, Long>> RemoveResults = new TreeMap<>();
+    public static final Map<String, HashMap<Integer, Long>> AddResults = new HashMap<>();
+    public static final Map<String, HashMap<Integer, Long>> RemoveResults = new HashMap<>();
 
     public static void StartTesting(ILogger logger, boolean enableEveryElementLogs) {
         TestCollection(logger, new ArrayList<>(), "ArrayList", enableEveryElementLogs, 5);
