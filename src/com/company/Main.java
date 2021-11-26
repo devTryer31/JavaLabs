@@ -24,8 +24,9 @@ public class Main {
     public static void main(String[] args) {
 
         HashMap<Integer, Long> xmaps = new HashMap<>();
-        xmaps.put(1, 1L);
-        xmaps.put(2, 2L);
+        xmaps.put(10, 10L);
+        xmaps.put(15, 25L);
+        xmaps.put(30, 30L);
 
         GraphComponentParams params = new GraphComponentParams();
         params.title = "TestTitle";
