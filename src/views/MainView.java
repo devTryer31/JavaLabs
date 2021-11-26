@@ -19,7 +19,8 @@ public final class MainView {
             "6. Get all vehicles\n" +
             "7. Dump data to file [file_path]\n" +
             "8. Load data from file [file_path]\n" +
-            "9. Exit\n";
+            "9. Print graphs\n" +
+            "10. Exit\n";
 
     public static void PrintAutoTestTable(Map<String, HashMap<Integer, Long>> results){
         boolean isHeadersPrinted = false;

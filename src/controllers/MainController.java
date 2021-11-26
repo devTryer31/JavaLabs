@@ -5,8 +5,11 @@ import Services.InMemoryVehiclesDataService;
 import Services.Interfaces.IVehiclesRepository;
 import Services.Interfaces.ILogger;
 import models.domain.VehicleItem;
+import views.GUI.Components.GraphComponent;
+import views.GUI.WindowView;
 import views.MainView;
 
+import java.awt.*;
 import java.util.Properties;
 
 public class MainController {
@@ -29,7 +32,7 @@ public class MainController {
                     MainView.Print("Admin display: \n" +
                             "Debug: " + _properties.getProperty("ISDEBUGMODE") + "\n" +
                             "AutoTests: " + isAutoTests + "\n");
-                    if(isAutoTests){
+                    if (isAutoTests) {
                         MainView.Print("Add results:");
                         MainView.PrintAutoTestTable(CollectionTester.AddResults);
                         MainView.Print("\n\nRemove results:");
@@ -74,6 +77,16 @@ public class MainController {
                 ((InMemoryVehiclesDataService) _dataRepository).LoadFromFile(MainView.GetFilePath(), MainView.DisplayYesOrNo("Tern on append mode?"));
                 break;
             case 9:
+                var params = new GraphComponent.GraphComponentParams();
+                params.graphColor = Color.CYAN;
+                params.xAxisName = "N";
+                params.yAxisName = "ns";
+                for (var addResKey : CollectionTester.AddResults.keySet()) {
+                    params.title = addResKey;
+                    new WindowView("Add result", CollectionTester.AddResults.get(addResKey), params).ShowWindowView();
+                }
+                break;
+            case 10:
                 return false;
             default:
                 MainView.Print("Invalid function number.");

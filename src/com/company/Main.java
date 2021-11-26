@@ -23,54 +23,40 @@ public class Main {
 
     public static void main(String[] args) {
 
-        HashMap<Integer, Long> xmaps = new HashMap<>();
-        xmaps.put(10, 10L);
-        xmaps.put(15, 25L);
-        xmaps.put(30, 30L);
+        Locale.setDefault(new Locale("en"));
 
-        GraphComponentParams params = new GraphComponentParams();
-        params.title = "TestTitle";
-        params.graphColor = Color.CYAN;
-        params.xAxisName = "count";
-        params.yAxisName = "time";
+        String appConfigPath = "app.properties";
 
-        WindowView window = new WindowView(xmaps, xmaps, params);
-        window.ShowWindowView();
+        Properties appProps = new Properties();
+        Logger logger = null;
+        try {
+            appProps.load(new FileInputStream(appConfigPath));
+            if (appProps.getProperty("ISDEBUGMODE").equals("true"))
+                logger = new Logger(new FileOutputStream("logs.txt", true));
+            if (appProps.getProperty("ENABLEAUTOTESTS").equals("true")) {
+                if (logger == null)
+                    CollectionTester.StartTesting(new Logger(System.out), false);
+                else
+                    CollectionTester.StartTesting(logger, false);
+            }
+        } catch (Exception e) {
+            MainView.PrintError(e.getMessage());
+            return;
+        }
 
-        //        Locale.setDefault(new Locale("en"));
-//
-//        String appConfigPath = "app.properties";
-//
-//        Properties appProps = new Properties();
-//        Logger logger = null;
-//        try {
-//            appProps.load(new FileInputStream(appConfigPath));
-//            if (appProps.getProperty("ISDEBUGMODE").equals("true"))
-//                logger = new Logger(new FileOutputStream("logs.txt", true));
-//            if (appProps.getProperty("ENABLEAUTOTESTS").equals("true")) {
-//                if(logger == null)
-//                    CollectionTester.StartTesting(new Logger(System.out), false);
-//                else
-//                    CollectionTester.StartTesting(logger, false);
-//            }
-//        } catch (Exception e) {
-//            MainView.PrintError(e.getMessage());
-//            return;
-//        }
-//
-//        var repository = new InMemoryVehiclesDataService(logger, new ArrayList<VehicleItem>());
-//        var mainController = new MainController(repository, appProps, logger);
-//        var loginController = new LoginController(appProps, logger);
-//
-//        var role = loginController.Execute();
-//
-//        MainView.Print("Enter '0'.");
-//        while (mainController.Execute(role)) ;
-//        if (logger != null) {
-//            logger.LogTotalErrorsCount();
-//            logger.LogInfo("Good program termination");
-//        }
-//        MainView.Print("Termination...");
+        var repository = new InMemoryVehiclesDataService(logger, new ArrayList<VehicleItem>());
+        var mainController = new MainController(repository, appProps, logger);
+        var loginController = new LoginController(appProps, logger);
+
+        var role = loginController.Execute();
+
+        MainView.Print("Enter '0'.");
+        while (mainController.Execute(role)) ;
+        if (logger != null) {
+            logger.LogTotalErrorsCount();
+            logger.LogInfo("Good program termination");
+        }
+        MainView.Print("Termination...");
     }
 
     private static void TestsLab3() {
