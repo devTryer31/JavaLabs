@@ -9,7 +9,7 @@ import java.util.Map;
 public class GraphComponent extends JComponent {
 
     GraphComponentParams _params;
-    
+
     private int _topYPos = 0;
     private float _graphPointsDiam;
     private int _inner_margin;
@@ -42,8 +42,8 @@ public class GraphComponent extends JComponent {
     public void paintComponent(Graphics gh) {
         Graphics2D field2d = (Graphics2D) gh;
 
-        if(_params.xs_values.size() == 0 || _params.xs_values.get(0).size() == 0
-        || _params.ys_values.size() == 0 || _params.ys_values.get(0).size() == 0)
+        if (_params.xs_values.size() == 0 || _params.xs_values.get(0).size() == 0
+                || _params.ys_values.size() == 0 || _params.ys_values.get(0).size() == 0)
             return;
 
         //making border(and axis)
@@ -58,15 +58,34 @@ public class GraphComponent extends JComponent {
         field2d.drawString(_params.x_axis_name, _width - _inner_margin + 5, axisLineY);
         field2d.drawString(_params.y_axis_name, _inner_margin, _topYPos - 5);
 
-        for (int o = 0; o < _params.xs_values.size()-1; ++o) {
-            var _x_values = _params.xs_values.get(o);
+        for (int o = 0; o < _params.xs_values.size() - 1; ++o) {
+            ArrayList<Double> _x_values;
+
+            if (!_params.logarithmicMode) {
+                _x_values = _params.xs_values.get(o);
+            } else {
+                var values = _x_values = _params.xs_values.get(o);
+                for (int i = 0; i < values.size(); ++i) {
+                    if (values.get(i) != 0)
+                        values.set(i, Math.log10(values.get(i)));
+                }
+            }
+
+
             var _y_values = _params.ys_values.get(o);
             Color graphColor = _params.graph_colors[(_params.start_graph_color_idx + o) % _params.graph_colors.length];
 
             var xMax = _x_values.stream().max(Double::compare).get();
             var xMin = _x_values.stream().min(Double::compare).get();
-            double XtoLenCoef = (double) innerRectWidth / (xMax - xMin);
-            var scaledXValues = _x_values.stream().map(x -> _inner_margin + (x - xMin) * XtoLenCoef).toList();
+            double XtoLenCoef;
+            if (!_params.logarithmicMode)
+                XtoLenCoef = (double) innerRectWidth / (xMax - xMin);
+            else
+                XtoLenCoef = xMin == 0 ? (innerRectWidth / xMax) : (innerRectWidth / (xMax - xMin));
+
+
+            var scaledXValues = _x_values.stream()
+                    .map(x -> _inner_margin + (x - xMin) * XtoLenCoef).toList();
 
 
             var yMax = _y_values.stream().max(Double::compare).get();

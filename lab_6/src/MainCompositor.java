@@ -102,6 +102,7 @@ public class MainCompositor extends JFrame {
     private void repaintGraphComponent(){
         handleData(_fileNameTextField.getText());
         _graphComponentParams.start_graph_color_idx = _colorsComboBox.getSelectedIndex();
+        _graphComponentParams.logarithmicMode = _logCheckBox.isSelected();
         _graphComponent.repaint();
     }
 

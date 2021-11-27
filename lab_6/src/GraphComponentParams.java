@@ -7,4 +7,5 @@ public class GraphComponentParams {
     public String y_axis_name;
     public java.awt.Color[] graph_colors;
     public int start_graph_color_idx;
+    public boolean logarithmicMode;
 }
