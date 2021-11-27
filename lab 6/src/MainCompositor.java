@@ -66,17 +66,28 @@ public class MainCompositor extends JFrame {
         ys.add(159D);
         ys.add(1509.6D);
 
-        var grPar = new GraphComponentParams();
-        grPar.graphColor = (Color)_colorsComboBox.getSelectedItem();
-        grPar.title = "tle";
-        grPar.xAxisName = "Xs";
-        grPar.yAxisName = "Ys";
+        var xs2 = new ArrayList<Double>();
+        xs2.add(122D);
+        xs2.add(232.3D);
+        xs2.add(5423D);
 
-        _graphComponent = new GraphComponent(xs,ys,grPar);
+        var ys2 = new ArrayList<Double>();
+        ys2.add(226D);
+        ys2.add(2159D);
+        ys2.add(1509.6D);
+
+        ArrayList<ArrayList<Double>> xsArr = new ArrayList<>();
+        xsArr.add(xs);
+        xsArr.add(xs2);
+
+        ArrayList<ArrayList<Double>> ysArr = new ArrayList<>();
+        ysArr.add(ys);
+        ysArr.add(ys2);
+
+        _graphComponent = new GraphComponent(xsArr,ysArr,"Xs", "Ys", __colors, _colorsComboBox.getSelectedIndex());
         _graphComponent.set_height(getHeight()-100);
         _graphComponent.set_width(getWidth()-100);
         innerContainer.add(_graphComponent);
-
 
 
         //innerContainer.setBackground(Color.RED);
