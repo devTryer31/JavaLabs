@@ -79,7 +79,7 @@ public class MainController {
                 break;
             case 9:
                 var params = new GraphComponentParams();
-                params.graphColor = Color.CYAN;
+                params.graphColor = Color.BLUE;
                 params.xAxisName = "N";
                 params.yAxisName = "ns";
                 for (var addResKey : CollectionTester.AddResults.keySet()) {
