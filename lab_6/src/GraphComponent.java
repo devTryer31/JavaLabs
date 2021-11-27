@@ -8,27 +8,16 @@ import java.util.Map;
 
 public class GraphComponent extends JComponent {
 
-    private final ArrayList<ArrayList<Double>> _xs_values;
-    private final ArrayList<ArrayList<Double>> _ys_values;
-    private final Color[] _graph_colors;
-    private final int _start_graph_color_idx;
-    private final String _x_axis_name;
-    private final String _y_axis_name;
+    GraphComponentParams _params;
+    
     private int _topYPos = 0;
     private float _graphPointsDiam;
-
     private int _inner_margin;
     private int _width;
     private int _height;
 
-    public GraphComponent(ArrayList<ArrayList<Double>> xs_values, ArrayList<ArrayList<Double>> ys_values,
-                          String x_axis_name, String y_axis_name, Color[] graph_colors, int start_graph_color_idx) {
-        _xs_values = xs_values;
-        _ys_values = ys_values;
-        _graph_colors = graph_colors;
-        _start_graph_color_idx = start_graph_color_idx;
-        _x_axis_name = x_axis_name;
-        _y_axis_name = y_axis_name;
+    public GraphComponent(GraphComponentParams params) {
+        _params = params;
         _inner_margin = 25;
         _graphPointsDiam = 5;
     }
@@ -53,9 +42,9 @@ public class GraphComponent extends JComponent {
     public void paintComponent(Graphics gh) {
         Graphics2D field2d = (Graphics2D) gh;
 
-        //making graphic title
-        field2d.drawString("", _width / 2, _topYPos);
-        _topYPos += 15;
+        if(_params.xs_values.size() == 0 || _params.xs_values.get(0).size() == 0
+        || _params.ys_values.size() == 0 || _params.ys_values.get(0).size() == 0)
+            return;
 
         //making border(and axis)
         var innerRectWidth = _width - _inner_margin * 2;
@@ -66,13 +55,13 @@ public class GraphComponent extends JComponent {
         field2d.draw(rect);
 
         //making the axis names
-        field2d.drawString(_x_axis_name, _width - _inner_margin + 5, axisLineY);
-        field2d.drawString(_y_axis_name, _inner_margin, _topYPos - 5);
+        field2d.drawString(_params.x_axis_name, _width - _inner_margin + 5, axisLineY);
+        field2d.drawString(_params.y_axis_name, _inner_margin, _topYPos - 5);
 
-        for (int o = 0; o < _xs_values.size(); ++o) {
-            var _x_values = _xs_values.get(o);
-            var _y_values = _ys_values.get(o);
-            Color graphColor = _graph_colors[(_start_graph_color_idx + o) % _graph_colors.length];
+        for (int o = 0; o < _params.xs_values.size()-1; ++o) {
+            var _x_values = _params.xs_values.get(o);
+            var _y_values = _params.ys_values.get(o);
+            Color graphColor = _params.graph_colors[(_params.start_graph_color_idx + o) % _params.graph_colors.length];
 
             var xMax = _x_values.stream().max(Double::compare).get();
             var xMin = _x_values.stream().min(Double::compare).get();
