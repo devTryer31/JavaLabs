@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 
 public class MainWindow extends JFrame {
 
@@ -12,7 +11,7 @@ public class MainWindow extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setSize(w, h);
         _innerContainer = getContentPane();
-        _gameField = new GameFieldComponent(this.getWidth() - 50, this.getHeight() - 50);
+        _gameField = new GameFieldComponent(this.getWidth() - 20, this.getHeight() - 50);
 
         _innerContainer.add(_gameField);
 
