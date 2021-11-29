@@ -7,7 +7,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.Random;
 
-public class GameFieldComponent extends JComponent {
+public class GameFieldComponent extends JComponent{
 
     private float _width;
     private float _height;
@@ -30,6 +30,8 @@ public class GameFieldComponent extends JComponent {
     private final Thread _ballUpdater;
 
     private final HashMap<Character, Boolean> _keysPool = new HashMap<>();
+
+    private final int[] _score = new int[2];
 
     GameFieldComponent(float w, float h) {
         _width = w;
@@ -133,7 +135,6 @@ public class GameFieldComponent extends JComponent {
         double next_x = (float) (_ball_x + (_ball_dx ? _ball_speed : -_ball_speed));
         double next_y = (float) (_ball_y + (_ball_dy ? _ball_speed : -_ball_speed));
 
-
         _ball_x = next_x;
         _ball_y = next_y;
         _ball.setFrame(_ball_x - _ball_r, _ball_y - _ball_r, ball_diam, ball_diam);
@@ -154,16 +155,21 @@ public class GameFieldComponent extends JComponent {
         }
         if (x < _inner_padding || x > _inner_padding + _width) {
             try {
-                Thread.sleep(5000);
+                Thread.sleep(3000);
             } catch (InterruptedException e) {
                 System.out.println(e.getMessage());
             }
+            if(x < _inner_padding)
+                ++_score[1];
+            if(x > _inner_padding + _width)
+                ++_score[0];
             ballRestart();
         }
 
     }
 
     private void ballRestart() {
+        CallBackFunc.setScoreTitleCallback(_score[0],_score[1]);
         _ball_x = _width / 2 + _inner_padding;
         _ball_y = _height / 2 + _inner_padding;
         Random rd = new Random();
@@ -173,11 +179,16 @@ public class GameFieldComponent extends JComponent {
 
     @Override
     protected void paintComponent(Graphics g) {
-        //super.paint(g);
         Graphics2D field2g = (Graphics2D) g;
         field2g.draw(new Rectangle2D.Float(0, 0, _width, _height));
         field2g.draw(_rightRect);
         field2g.draw(_leftRect);
         field2g.draw(_ball);
     }
+
+    interface Callback{
+        void setScoreTitleCallback(int f, int s);
+    }
+
+    public Callback CallBackFunc;
 }
