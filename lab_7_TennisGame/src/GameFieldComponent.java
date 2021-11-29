@@ -25,9 +25,13 @@ public class GameFieldComponent extends JComponent{
     private final Rectangle2D _rightRect;
     private final Ellipse2D _ball;
 
-    private final Thread _leftRectUpdater;
-    private final Thread _rightRectUpdater;
-    private final Thread _ballUpdater;
+    private boolean _cancellationToken = false;
+    private Thread _leftRectUpdater;
+    private final Runnable _leftRectUpdaterRunnable;
+    private Thread _rightRectUpdater;
+    private final Runnable _rightRectUpdaterRunnable;
+    private Thread _ballUpdater;
+    private final Runnable _ballUpdaterRunnable;
 
     private final HashMap<Character, Boolean> _keysPool = new HashMap<>();
 
@@ -65,10 +69,10 @@ public class GameFieldComponent extends JComponent{
         //Threading
 
         int delay_ms = 50;
-        _rightRectUpdater = new Thread(new Runnable() {
+        _rightRectUpdaterRunnable = new Runnable() {
             @Override
             public void run() {
-                while (true) {
+                while (!_cancellationToken) {
                     moveRectByKey('o', 'l', _rightRect);
                     try {
                         Thread.sleep(delay_ms);
@@ -77,12 +81,13 @@ public class GameFieldComponent extends JComponent{
                     }
                 }
             }
-        });
+        };
+        _rightRectUpdater = new Thread(_rightRectUpdaterRunnable);
         _rightRectUpdater.start();
-        _leftRectUpdater = new Thread(new Runnable() {
+        _leftRectUpdaterRunnable = new Runnable() {
             @Override
             public void run() {
-                while (true) {
+                while (!_cancellationToken) {
                     moveRectByKey('w', 's', _leftRect);
                     try {
                         Thread.sleep(delay_ms);
@@ -91,14 +96,15 @@ public class GameFieldComponent extends JComponent{
                     }
                 }
             }
-        });
+        };
+        _leftRectUpdater = new Thread(_leftRectUpdaterRunnable);
 
         _leftRectUpdater.start();
-        _ballUpdater = new Thread(new Runnable() {
+        _ballUpdaterRunnable = new Runnable() {
             @Override
             public void run() {
                 ballRestart();
-                while (true) {
+                while (!_cancellationToken) {
                     moveBall();
                     try {
                         Thread.sleep(delay_ms);
@@ -107,7 +113,8 @@ public class GameFieldComponent extends JComponent{
                     }
                 }
             }
-        });
+        };
+        _ballUpdater = new Thread(_ballUpdaterRunnable);
         _ballUpdater.start();
 
         ////
@@ -153,12 +160,7 @@ public class GameFieldComponent extends JComponent{
             _ball_dy = !_ball_dy;
             return;
         }
-        if (x < _inner_padding || x > _inner_padding + _width) {
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                System.out.println(e.getMessage());
-            }
+        if (x < _inner_padding || x+_ball_r*2 > _width) {
             if(x < _inner_padding)
                 ++_score[1];
             if(x > _inner_padding + _width)
@@ -170,6 +172,11 @@ public class GameFieldComponent extends JComponent{
 
     private void ballRestart() {
         CallBackFunc.setScoreTitleCallback(_score[0],_score[1]);
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            System.out.println(e.getMessage());
+        }
         _ball_x = _width / 2 + _inner_padding;
         _ball_y = _height / 2 + _inner_padding;
         Random rd = new Random();
@@ -191,4 +198,31 @@ public class GameFieldComponent extends JComponent{
     }
 
     public Callback CallBackFunc;
+
+    public void StartGame(){
+        _score[0] = _score[1] = 0;
+
+        _cancellationToken = false;
+
+        _leftRectUpdater = new Thread(_leftRectUpdaterRunnable);
+        _leftRectUpdater.start();
+
+        _rightRectUpdater = new Thread(_rightRectUpdaterRunnable);
+        _rightRectUpdater.start();
+
+        _ballUpdater = new Thread(_ballUpdaterRunnable);
+        _ballUpdater.start();
+    }
+
+    public void RestartGame(){
+        _cancellationToken = true;
+        try {
+            _leftRectUpdater.join();
+            _rightRectUpdater.join();
+            _ballUpdater.join();
+        } catch (InterruptedException e) {
+            JOptionPane.showMessageDialog(getRootPane(), "Threads error!\n" + e.getMessage());
+        }
+        StartGame();
+    }
 }
