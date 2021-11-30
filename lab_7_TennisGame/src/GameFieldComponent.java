@@ -7,7 +7,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.Random;
 
-public class GameFieldComponent extends JComponent{
+public class GameFieldComponent extends JComponent {
 
     private float _width;
     private float _height;
@@ -150,7 +150,8 @@ public class GameFieldComponent extends JComponent{
 
     private void ballAndRectCollisionExec(double x, double y, Rectangle2D rect) {
         if (y >= rect.getY() && y <= rect.getY() + _rects_height
-                && x >= rect.getX() && x <= rect.getX() + _rects_width) {
+                && x + _ball_r >= rect.getX()
+                && x - _ball_r <= rect.getX() + _rects_width) {
             _ball_dx = !_ball_dx;
         }
     }
@@ -160,10 +161,10 @@ public class GameFieldComponent extends JComponent{
             _ball_dy = !_ball_dy;
             return;
         }
-        if (x < _inner_padding || x+_ball_r*2 > _width) {
-            if(x < _inner_padding)
+        if (x < _inner_padding || x + _ball_r * 2 > _width) {
+            if (x < _inner_padding)
                 ++_score[1];
-            if(x > _inner_padding + _width)
+            if (x + _ball_r * 2 > _width)
                 ++_score[0];
             ballRestart();
         }
@@ -171,7 +172,7 @@ public class GameFieldComponent extends JComponent{
     }
 
     private void ballRestart() {
-        CallBackFunc.setScoreTitleCallback(_score[0],_score[1]);
+        CallBackFunc.setScoreTitleCallback(_score[0], _score[1]);
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
@@ -193,13 +194,13 @@ public class GameFieldComponent extends JComponent{
         field2g.draw(_ball);
     }
 
-    interface Callback{
+    interface Callback {
         void setScoreTitleCallback(int f, int s);
     }
 
     public Callback CallBackFunc;
 
-    public void StartGame(){
+    public void StartGame() {
         _score[0] = _score[1] = 0;
 
         _cancellationToken = false;
@@ -214,7 +215,7 @@ public class GameFieldComponent extends JComponent{
         _ballUpdater.start();
     }
 
-    public void RestartGame(){
+    public void RestartGame() {
         _cancellationToken = true;
         try {
             _leftRectUpdater.join();
