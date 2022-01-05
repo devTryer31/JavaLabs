@@ -7,7 +7,7 @@ public class ITmain {
     public static void main(String[] args){
         MultiThreadDownloader downloader = new MultiThreadDownloader(30);
         try {
-            downloader.DownloadFileThreading("https://speedtest.selectel.ru/100MB","D:\\Temp\\100MB_2");
+            downloader.DownloadFileThreading("https://speedtest.selectel.ru/100MB","D:\\Temp");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         } catch (IOException e) {
