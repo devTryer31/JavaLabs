@@ -3,13 +3,11 @@ package Models.HTTP;
 import Models.HTTP.Interfaces.WebDownloadClient;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.concurrent.locks.Lock;
 
 public class MultiThreadDownloader implements WebDownloadClient {
 
@@ -30,7 +28,7 @@ public class MultiThreadDownloader implements WebDownloadClient {
         final String file_name = tmp_arr[tmp_arr.length-1];
 
         //Build a correct file path.
-        final String file_path = folder_path + file_name;
+        final String file_path = folder_path + "\\" + file_name;
 
         int bytes_len = (int) _http_downloader.GetContentSize(URI);
         int part_size = bytes_len / _current_threads_count;
