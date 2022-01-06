@@ -1,4 +1,4 @@
-package DirectoriesUtils;
+package Models.DirectoriesUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;

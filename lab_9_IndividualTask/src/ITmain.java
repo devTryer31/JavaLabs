@@ -1,12 +1,4 @@
-import DirectoriesUtils.HashSumChecker;
-import Models.HTTP.MultiThreadDownloader;
 import Views.MainWindow;
-
-import java.awt.font.NumericShaper;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Map;
 
 public class ITmain {
     public static void main(String[] args) {
