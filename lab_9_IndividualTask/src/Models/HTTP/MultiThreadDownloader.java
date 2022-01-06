@@ -61,7 +61,7 @@ public class MultiThreadDownloader implements WebDownloadClient {
                             .DownloadFilePart(URI, finalLeft_pos, finalRight_pos);
                     updateProgressChecked(12, thread_id);
 
-                    //Can be optimised.
+                    //Can be optimised.TODO: optimize it.
                     byte[] file_part = response.inputStream().readAllBytes();
                     updateProgressChecked(30, thread_id);
 
@@ -73,7 +73,7 @@ public class MultiThreadDownloader implements WebDownloadClient {
                         if (i % inc == 0)
                             updateProgressChecked(++progress, thread_id);
                     }
-                    updateProgressChecked(100, thread_id);
+                    updateProgressChecked(100, thread_id);//Coverage.
                 } catch (Exception e) {
                     throw new RuntimeException();
                 }

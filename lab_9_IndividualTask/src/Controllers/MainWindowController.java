@@ -14,7 +14,9 @@ import java.util.Map;
 public class MainWindowController {
     private final String _ErrorTitle = "Error!";
     private final MultiThreadDownloader _Downloader = new MultiThreadDownloader(30);
-    private final MainWindow _Main_window = new MainWindow();
+    private MainWindow _Main_window = null;
+
+    //public int[] ThreadsProgress = new int[6];
 
     public MainWindowController() {
         _Downloader.SetProgressUpdater(this::updateDownloadProcess);
@@ -25,6 +27,7 @@ public class MainWindowController {
         var curr_process = pair.getValue();
 
         _Main_window.DisplayProgressById(thread_id, curr_process);
+        //ThreadsProgress[thread_id] = curr_process;
     }
 
     private void startDownloading(Map.Entry<String, String> pair) {
@@ -49,7 +52,8 @@ public class MainWindowController {
 
     public void StartSession() {
         EventQueue.invokeLater(()->{
-            _Main_window.SetStartButtonClickHandler(this::startDownloading);
+            _Main_window = new MainWindow(this::startDownloading);
+            //_Main_window.SetStartButtonClickHandler(this::startDownloading);
             _Main_window.setVisible(true);
         });
     }
