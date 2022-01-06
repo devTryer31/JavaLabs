@@ -1,10 +1,10 @@
+import Controllers.MainWindowController;
 import Views.MainWindow;
 
 public class ITmain {
     public static void main(String[] args) {
-        MainWindow window = new MainWindow();
-        window.setVisible(true);
-
+        var main_controller = new MainWindowController();
+        main_controller.StartSession();
 
 //        MultiThreadDownloader downloader = new MultiThreadDownloader(30);
 //

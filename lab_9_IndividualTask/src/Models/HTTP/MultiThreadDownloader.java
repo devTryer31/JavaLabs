@@ -10,23 +10,21 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.AbstractMap;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 public class MultiThreadDownloader implements WebDownloadClient {
 
     private final DownloadHttpClient _http_downloader;
-    private int _response_delay_sec = 10;
     private final int _current_threads_count = 6;
     private final Thread[] _threads_pool = new Thread[_current_threads_count];
-    private Function<Map.Entry<Integer, Integer>, Boolean> _progress_updater = null;
+    private Consumer<Map.Entry<Integer, Integer>> _progress_updater = null;
 
     public MultiThreadDownloader(int response_delay_sec) {
-        _response_delay_sec = response_delay_sec;
         _http_downloader = new DownloadHttpClient(response_delay_sec);
     }
 
     @Override
-    public boolean DownloadFileThreading(String URI, String folder_path) throws URISyntaxException, IOException, InterruptedException {
+    public String DownloadFileThreading(String URI, String folder_path) throws URISyntaxException, IOException, InterruptedException {
         //Getting the filename.
         final var tmp_arr = URLDecoder.decode(URI, StandardCharsets.UTF_8.toString()).split("/");
         final String file_name = tmp_arr[tmp_arr.length - 1];
@@ -44,6 +42,13 @@ public class MultiThreadDownloader implements WebDownloadClient {
 
         //Object mutex = new Object();
         byte[] file_bytes = new byte[bytes_len];
+
+        //For rethrowing exceptions from threads to this method.
+        var thread_exception_handler = new Thread.UncaughtExceptionHandler() {
+            public void uncaughtException(Thread th, Throwable ex) {
+                throw new RuntimeException("Thread exception" + ex.getMessage());
+            }
+        };
 
         while (current_thread_id != _current_threads_count) {
 
@@ -65,19 +70,16 @@ public class MultiThreadDownloader implements WebDownloadClient {
                     for (int i = 0; i < file_part.length; ++i) {
                         //We don't need synchronisation because we write data to
                         file_bytes[finalLeft_pos + i] = file_part[i];
-                        if(i % inc == 0)
+                        if (i % inc == 0)
                             updateProgressChecked(++progress, thread_id);
                     }
                     updateProgressChecked(100, thread_id);
-                } catch (URISyntaxException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
+                    throw new RuntimeException();
                 }
             });
 
+            _threads_pool[current_thread_id].setUncaughtExceptionHandler(thread_exception_handler);
             _threads_pool[current_thread_id++].start();
 
             left_pos = right_pos + 1;
@@ -94,19 +96,16 @@ public class MultiThreadDownloader implements WebDownloadClient {
         }
 
 
-        return true;
+        return file_path;
     }
 
     private void updateProgressChecked(int n, int thread_idx) {
         if (_progress_updater != null)
-            _progress_updater.apply(new AbstractMap.SimpleEntry<>(thread_idx, n));
+            _progress_updater.accept(new AbstractMap.SimpleEntry<>(thread_idx, n));
+
     }
 
-    public Function GetProgressUpdater() {
-        return _progress_updater;
-    }
-
-    public void SetProgressUpdater(Function _progress_updater) {
+    public void SetProgressUpdater(Consumer<Map.Entry<Integer, Integer>> _progress_updater) {
         this._progress_updater = _progress_updater;
     }
 }
