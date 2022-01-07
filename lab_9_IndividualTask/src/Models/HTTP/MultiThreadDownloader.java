@@ -40,7 +40,6 @@ public class MultiThreadDownloader implements WebDownloadClient {
 
         int left_pos = 0, right_pos = part_size - 1;
 
-        //Object mutex = new Object();
         byte[] file_bytes = new byte[bytes_len];
 
         //For rethrowing exceptions from threads to this method.
@@ -57,23 +56,21 @@ public class MultiThreadDownloader implements WebDownloadClient {
             int thread_id = current_thread_id;
             _threads_pool[current_thread_id] = new Thread(() -> {
                 try {
-                    var response = new DownloadHttpClient(_http_downloader.getResponseDelay())
-                            .DownloadFilePart(URI, finalLeft_pos, finalRight_pos);
+                    var response_stream = new DownloadHttpClient(_http_downloader.getResponseDelay())
+                            .DownloadFilePart(URI, finalLeft_pos, finalRight_pos).inputStream();
                     updateProgressChecked(12, thread_id);
 
-                    //Can be optimised.TODO: optimize it.
-                    byte[] file_part = response.inputStream().readAllBytes();
-                    updateProgressChecked(30, thread_id);
-
                     //+1 for correct progress division.
-                    int progress = 30, inc = file_part.length / (100 - 30) + 1;
-                    for (int i = 0; i < file_part.length; ++i) {
-                        //We don't need synchronisation because we write data to
-                        file_bytes[finalLeft_pos + i] = file_part[i];
-                        if (i % inc == 0)
+                    int progress = 12, inc = (finalRight_pos - finalLeft_pos) / (100 - progress) + 1;
+                    int idx = finalLeft_pos;
+                    int b;
+                    while ((b = response_stream.read()) != -1) {
+                        file_bytes[idx++] = (byte)b;
+                        if (idx % inc == 0)
                             updateProgressChecked(++progress, thread_id);
                     }
-                    updateProgressChecked(100, thread_id);//Coverage.
+
+                    updateProgressChecked(100, thread_id);//Progress coverage.
                 } catch (Exception e) {
                     throw new RuntimeException();
                 }
@@ -94,7 +91,6 @@ public class MultiThreadDownloader implements WebDownloadClient {
             os.write(file_bytes);
             os.flush();
         }
-
 
         return file_path;
     }

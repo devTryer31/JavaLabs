@@ -33,9 +33,11 @@ public class MainWindowController {
     private void startDownloading(Map.Entry<String, String> pair) {
         try {
             String uri = pair.getKey(), path = pair.getValue();
+            var t = System.currentTimeMillis();
             String result_file_path = _Downloader.DownloadFileThreading(uri, path);
+            var res_t = (System.currentTimeMillis() - t) / 1000;
             JOptionPane.showMessageDialog(_Main_window,
-                    "Success downloading.\n MD5 hash: " + HashSumChecker.GetHashSum(result_file_path, "MD5"));
+                    "Success downloading.\n" + res_t + " second left." + "\n MD5 hash: " + HashSumChecker.GetHashSum(result_file_path, "MD5"));
         } catch (URISyntaxException e) {
             JOptionPane.showMessageDialog(_Main_window, "Invalid URL input.", _ErrorTitle, JOptionPane.ERROR_MESSAGE);
         } catch (IOException e) {
@@ -51,7 +53,7 @@ public class MainWindowController {
 
 
     public void StartSession() {
-        EventQueue.invokeLater(()->{
+        EventQueue.invokeLater(() -> {
             _Main_window = new MainWindow(this::startDownloading);
             //_Main_window.SetStartButtonClickHandler(this::startDownloading);
             _Main_window.setVisible(true);
