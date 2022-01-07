@@ -1,10 +1,6 @@
 package Views;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -34,6 +30,17 @@ public class MainWindow extends JFrame {
         StartButton.addActionListener(e ->
                 new Thread(() ->//Cause STA Threading fill lock and progressBars will not update while runtime.
                         start_f.accept(new AbstractMap.SimpleEntry<>(GetUrlInput(), GetPathInput()))).start());
+
+        browseButton.addActionListener(e ->{
+            var fc = new JFileChooser();
+            UIManager.put("FileChooser.readOnly", Boolean.TRUE);
+            fc.setMultiSelectionEnabled(false);
+            fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+            var fc_res = fc.showDialog(this, "Choose directory to save file");
+            if(fc_res == JFileChooser.APPROVE_OPTION)
+                FilePathInputTF.setText(fc.getSelectedFile().getAbsolutePath());
+        });
 
         this.pack();
     }
