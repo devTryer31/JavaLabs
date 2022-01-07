@@ -1,5 +1,7 @@
-package Models.HTTP;
+package Services;
 
+import Controllers.Interfaces.IExceptionHandleController;
+import Models.HTTP.DownloadHttpClient;
 import Models.HTTP.Interfaces.WebDownloadClient;
 
 import java.io.IOException;
@@ -24,8 +26,8 @@ public class MultiThreadDownloader implements WebDownloadClient {
     }
 
     @Override
-    public String DownloadFileThreading(String URI, String folder_path) throws URISyntaxException, IOException, InterruptedException {
-        //Getting the filename.
+    public String DownloadFileThreading(String URI, String folder_path) throws URISyntaxException, IOException, InterruptedException, Exception {
+        //Getting correct filename without '%20' eth.
         final var tmp_arr = URLDecoder.decode(URI, StandardCharsets.UTF_8.toString()).split("/");
         final String file_name = tmp_arr[tmp_arr.length - 1];
 
@@ -42,12 +44,9 @@ public class MultiThreadDownloader implements WebDownloadClient {
 
         byte[] file_bytes = new byte[bytes_len];
 
-        //For rethrowing exceptions from threads to this method.
-        var thread_exception_handler = new Thread.UncaughtExceptionHandler() {
-            public void uncaughtException(Thread th, Throwable ex) {
-                throw new RuntimeException("Thread exception" + ex.getMessage());
-            }
-        };
+
+        //For 'rethrowing' exceptions from child threads.
+        final ExceptionLocator exceptionLocator = new ExceptionLocator();
 
         while (current_thread_id != _current_threads_count) {
 
@@ -56,8 +55,13 @@ public class MultiThreadDownloader implements WebDownloadClient {
             int thread_id = current_thread_id;
             _threads_pool[current_thread_id] = new Thread(() -> {
                 try {
-                    var response_stream = new DownloadHttpClient(_http_downloader.getResponseDelay())
-                            .DownloadFilePart(URI, finalLeft_pos, finalRight_pos).inputStream();
+                    var response = new DownloadHttpClient(_http_downloader.getResponseDelay())
+                            .DownloadFilePart(URI, finalLeft_pos, finalRight_pos);
+
+                    if (!(200 <= response.status() && response.status() < 300))
+                        throw new RuntimeException("Bad response code.");
+
+                    var response_stream = response.inputStream();
                     updateProgressChecked(12, thread_id);
 
                     //+1 for correct progress division.
@@ -65,18 +69,18 @@ public class MultiThreadDownloader implements WebDownloadClient {
                     int idx = finalLeft_pos;
                     int b;
                     while ((b = response_stream.read()) != -1) {
-                        file_bytes[idx++] = (byte)b;
+                        file_bytes[idx++] = (byte) b;
                         if (idx % inc == 0)
                             updateProgressChecked(++progress, thread_id);
                     }
 
                     updateProgressChecked(100, thread_id);//Progress coverage.
                 } catch (Exception e) {
-                    throw new RuntimeException();
+                    exceptionLocator.exception = e;
+                    exceptionLocator.isCaught = true;
                 }
             });
 
-            _threads_pool[current_thread_id].setUncaughtExceptionHandler(thread_exception_handler);
             _threads_pool[current_thread_id++].start();
 
             left_pos = right_pos + 1;
@@ -86,6 +90,10 @@ public class MultiThreadDownloader implements WebDownloadClient {
         }
 
         for (var th : _threads_pool) th.join();
+
+        if (exceptionLocator.isCaught) {
+            throw exceptionLocator.exception;
+        }
 
         try (var os = Files.newOutputStream(Paths.get(file_path))) {
             os.write(file_bytes);
@@ -103,5 +111,10 @@ public class MultiThreadDownloader implements WebDownloadClient {
 
     public void SetProgressUpdater(Consumer<Map.Entry<Integer, Integer>> _progress_updater) {
         this._progress_updater = _progress_updater;
+    }
+
+    private static class ExceptionLocator {
+        public Exception exception = null;
+        public boolean isCaught = false;
     }
 }
