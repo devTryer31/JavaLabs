@@ -1,10 +1,11 @@
 package Services;
 
-import Controllers.Interfaces.IExceptionHandleController;
 import Models.HTTP.DownloadHttpClient;
-import Models.HTTP.Interfaces.WebDownloadClient;
+import Services.Interfaces.WebDownloadClient;
+import Services.Interfaces.IConfigurationService;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -17,12 +18,14 @@ import java.util.function.Consumer;
 public class MultiThreadDownloader implements WebDownloadClient {
 
     private final DownloadHttpClient _http_downloader;
+    private final IConfigurationService _config_service;
     private final int _current_threads_count = 6;
     private final Thread[] _threads_pool = new Thread[_current_threads_count];
     private Consumer<Map.Entry<Integer, Integer>> _progress_updater = null;
 
-    public MultiThreadDownloader(int response_delay_sec) {
+    public MultiThreadDownloader(int response_delay_sec, IConfigurationService config_service) {
         _http_downloader = new DownloadHttpClient(response_delay_sec);
+        _config_service = config_service;
     }
 
     @Override
@@ -55,8 +58,14 @@ public class MultiThreadDownloader implements WebDownloadClient {
             int thread_id = current_thread_id;
             _threads_pool[current_thread_id] = new Thread(() -> {
                 try {
+                    String[] ss = URI.split("/");
+                    //Enter port to domain.
+                    ss[2] = ss[2]+":"+_config_service.getDownloadServerPorts()[thread_id];
+                    String thread_uri = String.join("/", ss);
+
+
                     var response = new DownloadHttpClient(_http_downloader.getResponseDelay())
-                            .DownloadFilePart(URI, finalLeft_pos, finalRight_pos);
+                            .DownloadFilePart(thread_uri, finalLeft_pos, finalRight_pos);
 
                     if (!(200 <= response.status() && response.status() < 300))
                         throw new RuntimeException("Bad response code.");

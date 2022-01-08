@@ -1,6 +1,7 @@
 package Views;
 
 import javax.swing.*;
+import java.io.File;
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -19,6 +20,10 @@ public class MainWindow extends JFrame {
     private JProgressBar progressBar6;
     private JButton StartButton;
 
+    private final JFileChooser _file_chooser;
+
+    private String _config_file_path;
+
     //start_f - delegate wats will be executed on start button clicked.
     public MainWindow(Consumer<Map.Entry<String, String>> start_f) {
         super("Multi loader");
@@ -27,22 +32,36 @@ public class MainWindow extends JFrame {
         this.setContentPane(MainField);
         this.setResizable(false);
 
+        _file_chooser = new JFileChooser();
+        UIManager.put("FileChooser.readOnly", Boolean.TRUE);
+        _file_chooser.setMultiSelectionEnabled(false);
+
         StartButton.addActionListener(e ->
                 new Thread(() ->//Cause STA Threading fill lock and progressBars will not update while runtime.
                         start_f.accept(new AbstractMap.SimpleEntry<>(GetUrlInput(), GetPathInput()))).start());
 
         browseButton.addActionListener(e ->{
-            var fc = new JFileChooser();
-            UIManager.put("FileChooser.readOnly", Boolean.TRUE);
-            fc.setMultiSelectionEnabled(false);
-            fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            _file_chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-            var fc_res = fc.showDialog(this, "Choose directory to save file");
+            var fc_res = _file_chooser.showDialog(this, "Choose directory to save the file");
             if(fc_res == JFileChooser.APPROVE_OPTION)
-                FilePathInputTF.setText(fc.getSelectedFile().getAbsolutePath());
+                FilePathInputTF.setText(_file_chooser.getSelectedFile().getAbsolutePath());
+        });
+
+        LoadConfigButton.addActionListener(e ->{
+            _file_chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            if(_config_file_path != null && !_config_file_path.isBlank())
+                _file_chooser.setCurrentDirectory(new File(_config_file_path));
+            var fc_res = _file_chooser.showDialog(this, "Select configuration file");
+            if(fc_res == JFileChooser.APPROVE_OPTION)
+                _config_file_path = _file_chooser.getSelectedFile().getAbsolutePath();
         });
 
         this.pack();
+    }
+
+    public String GetConfigPath(){
+        return _config_file_path;
     }
 
     public String GetUrlInput() {

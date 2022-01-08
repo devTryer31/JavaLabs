@@ -1,5 +1,7 @@
 package Services.Interfaces;
 
+import java.io.IOException;
+
 public interface IConfigurationService {
 
     String getHashMethodName();
@@ -8,4 +10,5 @@ public interface IConfigurationService {
 
     String[] getDownloadServerPorts();
 
+    void setConfigPath(String path) throws IOException;
 }

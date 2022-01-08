@@ -1,9 +1,10 @@
 import Controllers.MainWindowController;
+import Services.ConfigurationService;
 import Views.MainWindow;
 
 public class ITmain {
     public static void main(String[] args) {
-        var main_controller = new MainWindowController();
+        var main_controller = new MainWindowController(new ConfigurationService());
         main_controller.StartSession();
 
 //        MultiThreadDownloader downloader = new MultiThreadDownloader(30);

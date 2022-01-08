@@ -20,6 +20,10 @@ public class ConfigurationService implements IConfigurationService {
         setConfigPath(config_file_path);
     }
 
+    public ConfigurationService(){
+        _props = new Properties();
+    }
+
     @Override
     public String getHashMethodName() {
         return _props.getProperty(_hashMethodNameIndex);
@@ -34,7 +38,7 @@ public class ConfigurationService implements IConfigurationService {
     public String[] getDownloadServerPorts() {
         var res = _props.getProperty(_downloadServerPortsIndex).split("\\|");
         if(res.length == 0 || res.length > 6)
-            throw new InvalidParameterException("Server ports value is invalid in properties file.");
+            throw new IllegalArgumentException("Server ports value is invalid in properties file.");
         return res;
     }
 

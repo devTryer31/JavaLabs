@@ -1,4 +1,4 @@
-package Models.HTTP.Interfaces;
+package Services.Interfaces;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
