@@ -4,9 +4,15 @@ import Services.Interfaces.IConfigurationService;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.security.InvalidParameterException;
 import java.util.Properties;
 
+/**
+ * Configurations storage class.
+ * File view:
+ * hash_method=some_string
+ * expected_hash=some_string
+ * server_ports=port1|port2|port3|port4|port5|port6
+ */
 public class ConfigurationService implements IConfigurationService {
 
     private final String _hashMethodNameIndex = "hash_method";
@@ -20,6 +26,9 @@ public class ConfigurationService implements IConfigurationService {
         setConfigPath(config_file_path);
     }
 
+    /**
+     * Notion: properties will be empty cause unidentified input file path. Set it by setConfigPath(String) method.
+     */
     public ConfigurationService(){
         _props = new Properties();
     }
@@ -42,6 +51,10 @@ public class ConfigurationService implements IConfigurationService {
         return res;
     }
 
+    /**
+     * @param path Configuration file path.
+     * @throws IOException File path reading error.
+     */
     public void setConfigPath(String path) throws IOException {
         if(path == null || path.isBlank())
             throw new IllegalArgumentException("Config file path invalid");

@@ -5,7 +5,6 @@ import Services.Interfaces.WebDownloadClient;
 import Services.Interfaces.IConfigurationService;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -15,6 +14,7 @@ import java.util.AbstractMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+/**The class responsible for multithreaded downloading with the output of the progress of each thread.*/
 public class MultiThreadDownloader implements WebDownloadClient {
 
     private final DownloadHttpClient _http_downloader;
@@ -23,11 +23,19 @@ public class MultiThreadDownloader implements WebDownloadClient {
     private final Thread[] _threads_pool = new Thread[_current_threads_count];
     private Consumer<Map.Entry<Integer, Integer>> _progress_updater = null;
 
+    /**@param response_delay_sec Will be set for each thread. If the time runs out, the thread will stop downloading.*/
     public MultiThreadDownloader(int response_delay_sec, IConfigurationService config_service) {
         _http_downloader = new DownloadHttpClient(response_delay_sec);
         _config_service = config_service;
     }
 
+    /**
+     * Algorithm mainly used DownloadHttpClient.DownloadFilePart(String, int, int) method.
+     * @param URI The download file internet location. (http link).
+     * @param folder_path Output directory path.
+     * @return Resulting file path.
+     * @throws Exception Threads exceptions rethrowings.
+     */
     @Override
     public String DownloadFileThreading(String URI, String folder_path) throws URISyntaxException, IOException, InterruptedException, Exception {
         //Getting correct filename without '%20' eth.
@@ -47,7 +55,6 @@ public class MultiThreadDownloader implements WebDownloadClient {
 
         byte[] file_bytes = new byte[bytes_len];
 
-
         //For 'rethrowing' exceptions from child threads.
         final ExceptionLocator exceptionLocator = new ExceptionLocator();
 
@@ -63,7 +70,6 @@ public class MultiThreadDownloader implements WebDownloadClient {
                     ss[2] = ss[2]+":"+_config_service.getDownloadServerPorts()[thread_id];
                     String thread_uri = String.join("/", ss);
 
-
                     var response = new DownloadHttpClient(_http_downloader.getResponseDelay())
                             .DownloadFilePart(thread_uri, finalLeft_pos, finalRight_pos);
 
@@ -73,6 +79,7 @@ public class MultiThreadDownloader implements WebDownloadClient {
                     var response_stream = response.inputStream();
                     updateProgressChecked(12, thread_id);
 
+                    //Bytes writing there.
                     //+1 for correct progress division.
                     int progress = 12, inc = (finalRight_pos - finalLeft_pos) / (100 - progress) + 1;
                     int idx = finalLeft_pos;
@@ -112,16 +119,22 @@ public class MultiThreadDownloader implements WebDownloadClient {
         return file_path;
     }
 
+    /**
+     * Call back to ProgressUpdater method to notify about new thread download progress state.
+     * @param n Thread progress state [0-100].
+     * @param thread_idx Targeted thread index [0-5].
+     */
     private void updateProgressChecked(int n, int thread_idx) {
         if (_progress_updater != null)
             _progress_updater.accept(new AbstractMap.SimpleEntry<>(thread_idx, n));
-
     }
 
-    public void SetProgressUpdater(Consumer<Map.Entry<Integer, Integer>> _progress_updater) {
-        this._progress_updater = _progress_updater;
+    /**@param progress_updater This method will call when the new download progress will be received.*/
+    public void SetProgressUpdater(Consumer<Map.Entry<Integer, Integer>> progress_updater) {
+        this._progress_updater = progress_updater;
     }
 
+    /**Subsidiary internal struct.*/
     private static class ExceptionLocator {
         public Exception exception = null;
         public boolean isCaught = false;

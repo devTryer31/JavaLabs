@@ -5,6 +5,12 @@ import java.net.URISyntaxException;
 
 public interface WebDownloadClient {
 
-    //Return resulting file path
-    String DownloadFileThreading(String URL, String file_path) throws URISyntaxException, IOException, InterruptedException, Exception;
+    /**
+     * Start download implemented process with threads.
+     * @param URI The download file internet location. (http link).
+     * @param folder_path Output directory path.
+     * @return Resulting file path.
+     * @throws Exception Threads exceptions rethrowings.
+     */
+    String DownloadFileThreading(String URI, String folder_path) throws URISyntaxException, IOException, InterruptedException, Exception;
 }

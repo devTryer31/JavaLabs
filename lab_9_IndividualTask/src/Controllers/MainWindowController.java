@@ -11,18 +11,28 @@ import java.awt.*;
 import java.io.File;
 import java.util.Map;
 
+/**
+ * Main apps controller.
+ */
 public class MainWindowController {
     private final MainWindow _Main_window = new MainWindow(this::startDownloading);
     private final IExceptionHandleController _exceptions_handler = new ExceptionHandleController(_Main_window);
     private final MultiThreadDownloader _Downloader;
     private final IConfigurationService _config_service;
 
+    /**
+     * @param config_service Service for reading and application configuration.
+     */
     public MainWindowController(IConfigurationService config_service) {
         _config_service = config_service;
         _Downloader = new MultiThreadDownloader(30, _config_service);
         _Downloader.SetProgressUpdater(this::updateDownloadProcessProgress);
     }
 
+    /**
+     * Callback like method that represent a process progress to window view.
+     * @param pair Key - thread [0-5] index. Values - threads progress.
+     */
     private void updateDownloadProcessProgress(Map.Entry<Integer, Integer> pair) {
         var thread_id = pair.getKey();
         var curr_process = pair.getValue();
@@ -30,6 +40,10 @@ public class MainWindowController {
         _Main_window.DisplayProgressById(thread_id, curr_process);
     }
 
+    /**
+     * The main app method. From there will be started the threading downloading process.
+     * @param pair Key - URI to download. Value - file output path.
+     */
     private void startDownloading(Map.Entry<String, String> pair) {
         try {
             //Dynamic configs changing.
@@ -65,7 +79,9 @@ public class MainWindowController {
         }
     }
 
-
+    /**
+     * Show GUI.
+     */
     public void StartSession() {
         EventQueue.invokeLater(() -> {
             _Main_window.setVisible(true);

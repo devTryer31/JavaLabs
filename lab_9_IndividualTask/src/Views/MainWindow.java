@@ -6,6 +6,7 @@ import java.util.AbstractMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+/**User GUI class.*/
 public class MainWindow extends JFrame {
     private JPanel MainField;
     private JMenuItem LoadConfigButton;
@@ -24,7 +25,7 @@ public class MainWindow extends JFrame {
 
     private String _config_file_path;
 
-    //start_f - delegate wats will be executed on start button clicked.
+    /**@param start_f Delegate that will be executed on start button clicked.*/
     public MainWindow(Consumer<Map.Entry<String, String>> start_f) {
         super("Multi loader");
         this.setSize(800, 600);
@@ -33,6 +34,7 @@ public class MainWindow extends JFrame {
         this.setResizable(false);
 
         _file_chooser = new JFileChooser();
+        //Disable file modification.
         UIManager.put("FileChooser.readOnly", Boolean.TRUE);
         _file_chooser.setMultiSelectionEnabled(false);
 
@@ -50,8 +52,10 @@ public class MainWindow extends JFrame {
 
         LoadConfigButton.addActionListener(e ->{
             _file_chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
             if(_config_file_path != null && !_config_file_path.isBlank())
                 _file_chooser.setCurrentDirectory(new File(_config_file_path));
+
             var fc_res = _file_chooser.showDialog(this, "Select configuration file");
             if(fc_res == JFileChooser.APPROVE_OPTION)
                 _config_file_path = _file_chooser.getSelectedFile().getAbsolutePath();
@@ -72,9 +76,9 @@ public class MainWindow extends JFrame {
         return FilePathInputTF.getText().trim();
     }
 
-    public void DisplayProgressById(int id, int progress) {
+    public void DisplayProgressById(int progress_bar_id, int progress) {
         JProgressBar bar;
-        switch (id){
+        switch (progress_bar_id){
             case 0: bar = progressBar1; break;
             case 1: bar = progressBar2; break;
             case 2: bar = progressBar3; break;
@@ -83,10 +87,5 @@ public class MainWindow extends JFrame {
             default: bar = progressBar6;
         }
         bar.setValue(progress);
-        try {
-            Thread.sleep(10L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 }
